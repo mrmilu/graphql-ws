@@ -5,6 +5,7 @@ from django.utils.version import get_version_tuple
 from django.apps import apps
 from django.urls import path
 from .consumers import GraphQLSubscriptionConsumer
+from .settings import graphql_ws_path
 
 if apps.is_installed("django.contrib.auth"):
     from channels.auth import AuthMiddlewareStack
@@ -16,9 +17,9 @@ channels_version_tuple = get_version_tuple(channels_version)
 
 
 if channels_version_tuple > (3, 0 , 0):
-    websocket_urlpatterns = [path("subscriptions", GraphQLSubscriptionConsumer.as_asgi())]
+    websocket_urlpatterns = [path(graphql_ws_path, GraphQLSubscriptionConsumer.as_asgi())]
 else:
-    websocket_urlpatterns = [path("subscriptions", GraphQLSubscriptionConsumer)]
+    websocket_urlpatterns = [path(graphql_ws_path, GraphQLSubscriptionConsumer)]
 
 application = ProtocolTypeRouter({"websocket": URLRouter(websocket_urlpatterns)})
 
